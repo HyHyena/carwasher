@@ -26,12 +26,8 @@ public class ClientsService {
         return clientsRepository.findAll();
     }
 
-    public Optional<ClientEntity> findById(long id) {
+    public Optional<ClientEntity> findById(Long id) {
         return clientsRepository.findById(id);
-    }
-
-    public Optional<ClientEntity> findByName(String name){
-        return clientsRepository.findByName(name);
     }
 
     @Transactional
@@ -49,9 +45,4 @@ public class ClientsService {
         clientsRepository.deleteById(id);
     }
 
-    @Transactional
-    public void deleteClientByName(String name){
-        clientsRepository.deleteByName(name);
-    }
-    
 }

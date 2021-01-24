@@ -6,24 +6,22 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.homework.carwasher.entities.ClientEntity;
 import ru.homework.carwasher.utils.ClientsQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 @Service("washCar")
 @Slf4j
 public class WashCarService implements CarServices{
 
-    private final ClientsQueue clientEntities;
+    private final LinkedBlockingDeque<ClientEntity> clientEntities;
 
     @Autowired
     public WashCarService(ClientsQueue clientEntities) {
         this.clientEntities = clientEntities;
     }
 
-    public void standInLine(ClientEntity clientEntity) {
-        clientEntities.add(clientEntity);
-    }
-
+    @Override
     @Scheduled(initialDelay = 1000L, fixedRate = 10000L)
-    public synchronized void wash(){
+    public void service(){
         ClientEntity clientEntity = clientEntities.peek();
         if (clientEntity != null && clientEntity.getService().equals("washCar")) {
             try {
@@ -34,6 +32,5 @@ public class WashCarService implements CarServices{
                 e.printStackTrace();
             }
         }
-//        else log.info("there is no one in wash queue");
     }
 }

@@ -7,23 +7,22 @@ import org.springframework.stereotype.Service;
 import ru.homework.carwasher.entities.ClientEntity;
 import ru.homework.carwasher.utils.ClientsQueue;
 
+import java.util.concurrent.LinkedBlockingDeque;
+
 @Service("changeTyres")
 @Slf4j
 public class ChangeTyresService implements CarServices{
 
-    private final ClientsQueue clientEntities;
+    private final LinkedBlockingDeque<ClientEntity> clientEntities;
 
     @Autowired
     public ChangeTyresService(ClientsQueue clientEntities) {
         this.clientEntities = clientEntities;
     }
 
-    public void standInLine(ClientEntity clientEntity) {
-        clientEntities.add(clientEntity);
-    }
-
-    @Scheduled(initialDelay = 1000L, fixedRate = 10000L)
-    public synchronized void changeTyres(){
+    @Override
+    @Scheduled(initialDelay = 1000L, fixedRate = 100000L)
+    public void service(){
         ClientEntity clientEntity = clientEntities.peek();
         if (clientEntity != null && clientEntity.getService().equals("changeTyres")) {
             try {
@@ -34,7 +33,6 @@ public class ChangeTyresService implements CarServices{
                 e.printStackTrace();
             }
         }
-//        else log.info("there is no one in tyres queue");
     }
 
 }
